@@ -8,3 +8,6 @@
 
 *.hi
 *.o
+
+.zig-cache/
+zig-out/
