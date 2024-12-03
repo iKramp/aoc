@@ -45,14 +45,4 @@ roundTogether (a, b) = (ceiling a, floor b)
 sumTogether :: (Int, Int) -> Int
 sumTogether (a, b) = b - a + 1
 
-main = interact $ 
-    show . 
-    product . 
-    map (
-        sumTogether . 
-        roundTogether . 
-        findZeroes
-    ) . 
-    groupByPairs . 
-    groupInput . 
-    filterInput
+main = interact $ show . product . map (sumTogether . roundTogether . findZeroes) . groupByPairs . groupInput . filterInput
