@@ -11,3 +11,5 @@
 
 .zig-cache/
 zig-out/
+
+in.txt
