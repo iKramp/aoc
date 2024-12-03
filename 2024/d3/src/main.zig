@@ -19,6 +19,7 @@ pub fn main() !void {
     defer allocator.free(slice);
 
     part1(slice);
+    part2(slice);
 }
 
 fn splitString(allocator: std.mem.Allocator, input: []const u8, delimiter: u8) ![][]u8 {
@@ -44,6 +45,17 @@ fn splitString(allocator: std.mem.Allocator, input: []const u8, delimiter: u8) !
 fn part1(input: []u8) void {
     var sum: u32 = 0;
     var i: u32 = 0;
+    while (i < input.len - 15) {
+        sum += check_at_i(input, i);
+        i += 1;
+    }
+    std.log.info("Part 1 ", .{});
+    std.log.info("Sum: {}\n", .{sum});
+}
+
+fn part2(input: []u8) void {
+    var sum: u32 = 0;
+    var i: u32 = 0;
     var enabled = true;
     while (i < input.len - 15) {
         if (!enabled and is_do(input, i)) {
@@ -55,7 +67,7 @@ fn part1(input: []u8) void {
         }
         i += 1;
     }
-    std.log.info("Part 1 ", .{});
+    std.log.info("Part 2 ", .{});
     std.log.info("Sum: {}\n", .{sum});
 }
 
@@ -65,8 +77,6 @@ fn check_at_i(input: []u8, in_i: usize) u32 {
     var i = in_i;
     if (input[i] == 'm' and input[i + 1] == 'u' and input[i + 2] == 'l' and input[i + 3] == '(') {
         if (input[i + 4] < '0' or input[i + 4] > '9') {
-            std.log.info("fake mul at {}, reason: first num has no digits", .{in_i});
-            std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
             return 0;
         } else {
             num1 = input[i + 4] - '0';
@@ -76,29 +86,21 @@ fn check_at_i(input: []u8, in_i: usize) u32 {
             if (input[i + 6] >= '0' and input[i + 6] <= '9') {
                 num1 = num1 * 10 + input[i + 6] - '0';
                 if (input[i + 7] != ',') {
-                    std.log.info("fake mul at {}, reason: first num 4th character is not ,", .{in_i});
-                    std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
                     return 0;
                 } else {
                     i += 8;
                 }
             } else if (input[i + 6] != ',') {
-                std.log.info("fake mul at {}, reason: first num third char is not digit or ,", .{in_i});
-                std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
                 return 0;
             } else {
                 i += 7;
             }
         } else if (input[i + 5] != ',') {
-            std.log.info("fake mul at {}, reason: first num second char is not digit or ,", .{in_i});
-            std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
             return 0;
         } else {
             i += 6;
         }
         if (input[i] < '0' or input[i] > '9') {
-            std.log.info("fake mul at {}, reason: second num has no digits", .{in_i});
-            std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
             return 0;
         } else {
             num2 = input[i] - '0';
@@ -108,24 +110,17 @@ fn check_at_i(input: []u8, in_i: usize) u32 {
             if (input[i + 2] >= '0' and input[i + 2] <= '9') {
                 num2 = num2 * 10 + input[i + 2] - '0';
                 if (input[i + 3] != ')') {
-                    std.log.info("fake mul at {}, reason: second num 4th character is not )", .{in_i});
-                    std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
                     return 0;
                 }
             } else if (input[i + 2] != ')') {
-                std.log.info("fake mul at {}, reason: second num 3rd character is not digit or )", .{in_i});
-                std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
                 return 0;
             }
         } else if (input[i + 1] != ')') {
-            std.log.info("fake mul at {}, reason: second num second char is not digit or )", .{in_i});
-            std.log.info("slice at that index: {s}", .{input[in_i .. in_i + 15]});
             return 0;
         }
     } else {
         return 0;
     }
-    std.log.info("found mul at: {}\n", .{in_i});
     return num1 * num2;
 }
 
